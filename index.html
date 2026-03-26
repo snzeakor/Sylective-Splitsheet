@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sylective - Song Information Form</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400;1,600&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0a0a0f;--gold:#c9a84c;--gold2:#e8c96a;--cream:#f5f3ee;--border:#e0dcd4;--muted:#94a3b8;--card:#fff;--green:#10b981;--amber:#f59e0b;--red:#dc2626}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Outfit',sans-serif;background:var(--cream);min-height:100vh;padding-bottom:80px}
+.bg{position:fixed;inset:0;z-index:0;background:linear-gradient(160deg,#f0ece3 0%,#f5f3ee 40%,#ede9e0 100%);pointer-events:none}
+.bg::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 100% 60% at 50% 0%,rgba(201,168,76,.08) 0%,transparent 65%)}
+.shell{position:relative;z-index:1;max-width:600px;margin:0 auto;padding:0 18px}
+.hero{position:relative;background:var(--ink);border-radius:0 0 28px 28px;padding:48px 32px 42px;margin-bottom:40px;overflow:hidden;text-align:center}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 120% 80% at 50% -20%,rgba(201,168,76,.22) 0%,transparent 60%)}
+.hero::after{content:'\2736';position:absolute;font-size:260px;color:rgba(201,168,76,.04);top:-40px;right:-20px;line-height:1;pointer-events:none}
+.hero-inner{position:relative;z-index:1}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:10px;color:var(--gold);font-size:11px;font-weight:600;letter-spacing:.22em;margin-bottom:18px}
+.hero-eyebrow span{display:block;width:24px;height:1px;background:var(--gold);opacity:.5}
+.hero h1{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(34px,8vw,52px);font-weight:600;color:#fff;line-height:1.05;margin-bottom:6px}
+.hero h1 em{font-style:italic;color:var(--gold2)}
+.hero-div{width:40px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:16px auto}
+.hero p{font-size:13px;color:rgba(255,255,255,.5);line-height:1.75;max-width:380px;margin:0 auto}
+.song-tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.stab{padding:7px 16px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;border:1.5px solid var(--border);background:#fff;color:var(--muted);transition:all .15s;display:flex;align-items:center;gap:6px}
+.stab.active{background:var(--ink);color:var(--gold2);border-color:var(--ink)}
+.stab .dot{width:7px;height:7px;border-radius:50%;background:var(--amber);flex-shrink:0}
+.stab .dot.ok{background:var(--green)}
+.add-stab{padding:7px 16px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;border:1.5px dashed rgba(201,168,76,.5);background:transparent;color:var(--gold);transition:all .15s}
+.add-stab:hover{border-color:var(--gold);background:rgba(201,168,76,.05)}
+.section{margin-bottom:24px}
+.shdr{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.snum{width:30px;height:30px;border-radius:50%;background:var(--ink);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;font-family:'Cormorant Garamond',serif}
+.stitle{font-size:13px;font-weight:600;letter-spacing:.1em;color:var(--ink);text-transform:uppercase}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px;box-shadow:0 2px 20px rgba(0,0,0,.06)}
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.field:last-child{margin-bottom:0}
+.field label{font-size:11px;font-weight:600;color:#6b7280;letter-spacing:.04em}
+.req{color:var(--red);margin-left:2px}
+input,select,textarea{border:1.5px solid var(--border);border-radius:10px;padding:11px 14px;font-size:14px;font-family:'Outfit',sans-serif;color:var(--ink);background:#faf9f7;outline:none;width:100%;transition:border-color .2s,box-shadow .2s,background .2s;-webkit-appearance:none;appearance:none}
+input:focus,select:focus,textarea:focus{border-color:var(--gold);background:#fff;box-shadow:0 0 0 3px rgba(201,168,76,.12)}
+input::placeholder,textarea::placeholder{color:#c8c4bc}
+textarea{resize:vertical;min-height:72px;line-height:1.6}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2394a3b8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;cursor:pointer}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:480px){.g2{grid-template-columns:1fr}}
+.pct-wrap{display:flex;align-items:center;border:1.5px solid var(--border);border-radius:10px;overflow:hidden;background:#faf9f7;transition:border-color .2s}
+.pct-wrap:focus-within{border-color:var(--gold);background:#fff}
+.pct-wrap input{border:none;padding:11px 6px 11px 14px;font-size:14px;font-weight:600;text-align:right;background:transparent;flex:1;min-width:0;box-shadow:none}
+.pct-sign{padding:0 12px 0 4px;font-size:14px;color:var(--muted);font-weight:700;flex-shrink:0}
+.wcard{border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:12px;background:#faf9f7}
+.wcard-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.wlbl{font-size:15px;font-weight:600;font-style:italic;color:var(--ink);font-family:'Cormorant Garamond',serif}
+.rm-btn{background:#fff5f5;border:1.5px solid #fecaca;color:var(--red);border-radius:6px;width:28px;height:28px;cursor:pointer;font-size:16px;font-weight:700;font-family:inherit;display:flex;align-items:center;justify-content:center;padding:0}
+.tbar{background:var(--ink);border-radius:12px;padding:16px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;margin-top:16px}
+.tlbl{font-size:8px;font-weight:700;letter-spacing:.14em;color:#475569;margin-bottom:4px}
+.tval{font-size:20px;font-weight:700;color:#f8fafc;line-height:1;font-family:monospace}
+.tstat{font-size:13px;font-weight:700;color:var(--amber)}
+.tstat.ok{color:var(--green)}
+.add-wbtn{width:100%;padding:12px;background:transparent;border:1.5px dashed rgba(201,168,76,.4);border-radius:12px;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:4px;transition:all .2s}
+.add-wbtn:hover{border-color:var(--gold);color:var(--ink)}
+.rm-song-btn{padding:8px 16px;background:transparent;border:1.5px solid #fecaca;border-radius:8px;color:var(--red);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:14px}
+.sub-note{background:linear-gradient(135deg,#fffbeb,#fef9ee);border:1px solid rgba(201,168,76,.3);border-radius:12px;padding:16px 18px;font-size:13px;color:#78611a;line-height:1.7;margin-bottom:16px}
+.btn-email{width:100%;padding:16px;background:linear-gradient(135deg,#0a0a0f,#1a1a2e);color:var(--gold2);border:none;border-radius:14px;font-size:14px;font-weight:600;letter-spacing:.06em;cursor:pointer;font-family:inherit;margin-bottom:10px;box-shadow:0 4px 20px rgba(10,10,15,.25);transition:transform .15s,box-shadow .15s}
+.btn-email:hover{transform:translateY(-1px);box-shadow:0 8px 28px rgba(10,10,15,.3)}
+.btn-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn-sec{width:100%;padding:14px;background:transparent;color:var(--ink);border:1.5px solid rgba(10,10,15,.2);border-radius:14px;font-size:13px;font-weight:600;letter-spacing:.04em;cursor:pointer;font-family:inherit;transition:background .15s,border-color .15s}
+.btn-sec:hover{background:rgba(10,10,15,.04);border-color:var(--ink)}
+.footer{text-align:center;padding:28px 0 0;border-top:1px solid var(--border);margin-top:36px}
+.flogo{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;color:var(--ink);letter-spacing:.1em}
+.fsub{font-size:11px;color:var(--muted);margin-top:4px}
+.success{display:none;text-align:center;padding:60px 20px}
+.success .ck{font-size:52px;margin-bottom:16px}
+.success h2{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:700;color:var(--ink);margin-bottom:10px}
+.success p{font-size:14px;color:var(--muted);line-height:1.75}
+input.err-field{border-color:var(--red)!important}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="shell">
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-eyebrow"><span></span>Sylective<span></span></div>
+      <h1>Song <em>Information</em><br>Intake Form</h1>
+      <div class="hero-div"></div>
+      <p>Fill out the details below for your song(s). All information goes directly to your publisher for split sheet processing.</p>
+    </div>
+  </div>
+  <div id="form-wrap">
+    <div class="song-tabs" id="song-tabs"></div>
+    <div id="songs-container"></div>
+    <div class="submit-area" style="margin-top:8px">
+      <div class="sub-note">
+        <strong style="display:block;margin-bottom:6px;font-size:14px;color:#5a4610">How to submit</strong>
+        📬 <strong>Send via Email</strong> — opens your mail app pre-filled to your publisher.<br>
+        📄 <strong>Split Sheet PDF</strong> — full split sheet with signature lines for every writer.<br>
+        📊 <strong>PRO Excel File</strong> — formatted spreadsheet ready to submit to ASCAP, BMI, SESAC and more.
+      </div>
+      <button class="btn-email" onclick="submitEmail()">📬 Send to Publisher via Email</button>
+      <div class="btn-row">
+        <button class="btn-sec" onclick="submitPDF()">📄 Split Sheet PDF</button>
+        <button class="btn-sec" onclick="submitExcel()">📊 PRO Excel File</button>
+      </div>
+    </div>
+    <div class="footer">
+      <div class="flogo">SYLECTIVE</div>
+      <div class="fsub">Split Sheet Organizer &middot; Sylective@gmail.com</div>
+    </div>
+  </div>
+  <div class="success" id="success-screen">
+    <div class="ck">&#10003;&#65039;</div>
+    <h2>Submitted!</h2>
+    <p>Your song information has been sent to Sylective.<br>You will hear back once your split sheet is ready.</p>
+    <button onclick="resetForm()" style="margin-top:24px;padding:12px 28px;background:var(--ink);color:var(--gold2);border:none;border-radius:10px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;letter-spacing:.06em">+ Submit Another Song</button>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+var PUB_EMAIL = 'Sylective@gmail.com';
+var ROLES = ["Composer","Lyricist","Composer / Lyricist","Producer","Topliner","Arranger","Other"];
+var PROS  = ["ASCAP","BMI","SESAC","SOCAN","PRS","APRA","SACEM","Other","N/A"];
+var _id = 1;
+function uid(){ return ++_id; }
+function pct(v){ var n=parseFloat(v); return isNaN(n)?0:n; }
+function sumF(arr,f){ return arr.reduce(function(a,w){return a+pct(w[f]);},0); }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function blankWriter(){ return {id:uid(),name:'',role:'Composer / Lyricist',pro:'ASCAP',ipi:'',publisher:'',email:'',comp:'',master:''}; }
+function blankSong(){ return {id:uid(),title:'',artist:'',iswc:'',copyright:'',year:'',date:'',notes:'',writers:[blankWriter(),blankWriter()]}; }
+
+var songs = [blankSong()];
+var activeId = songs[0].id;
+
+function renderTabs(){
+  var el=document.getElementById('song-tabs');
+  var html=songs.map(function(s,i){
+    var ct=sumF(s.writers,'comp'),mt=sumF(s.writers,'master');
+    var ok=Math.abs(ct-100)<0.01&&Math.abs(mt-100)<0.01;
+    return '<button class="stab'+(s.id===activeId?' active':'')+'" onclick="switchSong('+s.id+')">'
+      +'<span class="dot'+(ok?' ok':'')+'"></span>'
+      +(esc(s.title)||'Song '+(i+1))
+      +'</button>';
+  }).join('');
+  html+='<button class="add-stab" onclick="addSong()">+ Add Song</button>';
+  el.innerHTML=html;
+}
+
+function renderActiveSong(){
+  var song=songs.find(function(s){return s.id===activeId;});
+  if(!song) return;
+  var ct=sumF(song.writers,'comp'),mt=sumF(song.writers,'master');
+  var ok=Math.abs(ct-100)<0.01&&Math.abs(mt-100)<0.01;
+  var whtml=song.writers.map(function(w,i){return writerHTML(w,i,song.writers.length);}).join('');
+  var html='<div class="section">'
+    +'<div class="shdr"><div class="snum">1</div><div class="stitle">Song Information</div></div>'
+    +'<div class="card">'
+    +'<div class="g2">'
+    +'<div class="field"><label>Song Title <span class="req">*</span></label>'
+    +'<input type="text" value="'+esc(song.title)+'" placeholder="e.g. Midnight Drive" oninput="updateSong(\'title\',this.value)"></div>'
+    +'<div class="field"><label>Artist / Project</label>'
+    +'<input type="text" value="'+esc(song.artist)+'" placeholder="e.g. Alex Rivera" oninput="updateSong(\'artist\',this.value)"></div>'
+    +'</div>'
+    +'<div class="g2">'
+    +'<div class="field"><label>ISWC Number</label>'
+    +'<input type="text" value="'+esc(song.iswc)+'" placeholder="T-000.000.000-0" oninput="updateSong(\'iswc\',this.value)"></div>'
+    +'<div class="field"><label>Copyright Reg. #</label>'
+    +'<input type="text" value="'+esc(song.copyright)+'" placeholder="e.g. PAu-000-000" oninput="updateSong(\'copyright\',this.value)"></div>'
+    +'</div>'
+    +'<div class="g2">'
+    +'<div class="field"><label>Year of Creation</label>'
+    +'<input type="text" value="'+esc(song.year)+'" placeholder="e.g. 2024" oninput="updateSong(\'year\',this.value)"></div>'
+    +'<div class="field"><label>Date of Creation</label>'
+    +'<input type="date" value="'+esc(song.date)+'" oninput="updateSong(\'date\',this.value)"></div>'
+    +'</div>'
+    +'<div class="field"><label>Additional Notes</label>'
+    +'<textarea placeholder="Any other relevant details..." oninput="updateSong(\'notes\',this.value)">'+esc(song.notes)+'</textarea></div>'
+    +'</div></div>'
+    +'<div class="section">'
+    +'<div class="shdr"><div class="snum">2</div><div class="stitle">Writers &amp; Ownership Splits</div></div>'
+    +'<div class="card">'
+    +'<div id="writers-list">'+whtml+'</div>'
+    +'<button class="add-wbtn" onclick="addWriter()">+ Add Another Writer</button>'
+    +'<div class="tbar">'
+    +'<div><div class="tlbl">COMP TOTAL</div><div class="tval">'+ct.toFixed(1)+'%</div></div>'
+    +'<div><div class="tlbl">MASTER TOTAL</div><div class="tval">'+mt.toFixed(1)+'%</div></div>'
+    +'<div><div class="tlbl">STATUS</div><div class="tstat'+(ok?' ok':'')+'">'+( ok?'VALID \u2713':ct>100||mt>100?'OVER 100%':'PENDING')+'</div></div>'
+    +'</div>'
+    +(songs.length>1?'<button class="rm-song-btn" onclick="removeSong('+song.id+')">Remove This Song</button>':'')
+    +'</div></div>';
+  document.getElementById('songs-container').innerHTML=html;
+}
+
+function writerHTML(w,i,total){
+  var roles=ROLES.map(function(r){return '<option'+(r===w.role?' selected':'')+'>'+r+'</option>';}).join('');
+  var pros=PROS.map(function(p){return '<option'+(p===w.pro?' selected':'')+'>'+p+'</option>';}).join('');
+  return '<div class="wcard">'
+    +'<div class="wcard-hdr"><span class="wlbl">Writer '+(i+1)+'</span>'
+    +(total>1?'<button class="rm-btn" onclick="removeWriter('+w.id+')">&#215;</button>':'')
+    +'</div>'
+    +'<div class="field"><label>Full Legal Name <span class="req">*</span></label>'
+    +'<input type="text" value="'+esc(w.name)+'" placeholder="e.g. Alex Rivera" oninput="updateWriter('+w.id+',\'name\',this.value)"></div>'
+    +'<div class="g2">'
+    +'<div class="field"><label>Role</label><select onchange="updateWriter('+w.id+',\'role\',this.value)">'+roles+'</select></div>'
+    +'<div class="field"><label>PRO Affiliation</label><select onchange="updateWriter('+w.id+',\'pro\',this.value)">'+pros+'</select></div>'
+    +'</div>'
+    +'<div class="g2">'
+    +'<div class="field"><label>IPI Number</label>'
+    +'<input type="text" value="'+esc(w.ipi)+'" placeholder="00000000000" oninput="updateWriter('+w.id+',\'ipi\',this.value)"></div>'
+    +'<div class="field"><label>Publisher Name</label>'
+    +'<input type="text" value="'+esc(w.publisher)+'" placeholder="Publisher name" oninput="updateWriter('+w.id+',\'publisher\',this.value)"></div>'
+    +'</div>'
+    +'<div class="field"><label>Writer Email</label>'
+    +'<input type="email" value="'+esc(w.email)+'" placeholder="writer@email.com" oninput="updateWriter('+w.id+',\'email\',this.value)"></div>'
+    +'<div class="g2">'
+    +'<div class="field"><label>Composition %</label>'
+    +'<div class="pct-wrap"><input type="number" min="0" max="100" value="'+esc(w.comp)+'" placeholder="0" oninput="updateWriter('+w.id+',\'comp\',this.value)"><span class="pct-sign">%</span></div></div>'
+    +'<div class="field"><label>Master %</label>'
+    +'<div class="pct-wrap"><input type="number" min="0" max="100" value="'+esc(w.master)+'" placeholder="0" oninput="updateWriter('+w.id+',\'master\',this.value)"><span class="pct-sign">%</span></div></div>'
+    +'</div></div>';
+}
+
+function render(){ renderTabs(); renderActiveSong(); }
+
+function switchSong(id){ activeId=id; render(); window.scrollTo({top:0,behavior:'smooth'}); }
+function addSong(){ var s=blankSong(); songs.push(s); activeId=s.id; render(); window.scrollTo({top:0,behavior:'smooth'}); }
+function removeSong(id){ if(songs.length<=1)return; songs=songs.filter(function(s){return s.id!==id;}); activeId=songs[songs.length-1].id; render(); }
+function updateSong(f,v){ var s=songs.find(function(x){return x.id===activeId;}); if(s){s[f]=v;renderTabs();} }
+function addWriter(){ var s=songs.find(function(x){return x.id===activeId;}); if(s){s.writers.push(blankWriter());renderActiveSong();} }
+function removeWriter(id){ var s=songs.find(function(x){return x.id===activeId;}); if(!s||s.writers.length<=1)return; s.writers=s.writers.filter(function(w){return w.id!==id;}); renderActiveSong(); }
+
+function updateWriter(id,f,v){
+  var s=songs.find(function(x){return x.id===activeId;});
+  if(!s) return;
+  var w=s.writers.find(function(x){return x.id===id;});
+  if(!w) return;
+  w[f]=v;
+  var ct=sumF(s.writers,'comp'),mt=sumF(s.writers,'master');
+  var ok=Math.abs(ct-100)<0.01&&Math.abs(mt-100)<0.01;
+  var bar=document.querySelector('.tbar');
+  if(bar){
+    bar.children[0].querySelector('.tval').textContent=ct.toFixed(1)+'%';
+    bar.children[1].querySelector('.tval').textContent=mt.toFixed(1)+'%';
+    var st=bar.children[2].querySelector('.tstat');
+    st.textContent=ok?'VALID \u2713':ct>100||mt>100?'OVER 100%':'PENDING';
+    st.className='tstat'+(ok?' ok':'');
+  }
+  renderTabs();
+}
+
+function validate(){
+  for(var i=0;i<songs.length;i++){
+    var s=songs[i];
+    if(!s.title.trim()){alert('Please enter a title for Song '+(i+1)+'.');switchSong(s.id);return false;}
+    for(var j=0;j<s.writers.length;j++){
+      if(!s.writers[j].name.trim()){alert('Please enter a name for all writers in "'+s.title+'".');switchSong(s.id);return false;}
+    }
+  }
+  return true;
+}
+
+function submitEmail(){
+  if(!validate()) return;
+  var txt='SYLECTIVE - SONG INFORMATION INTAKE\n';
+  txt+='Submitted: '+new Date().toLocaleString()+'\n\n';
+  songs.forEach(function(s,si){
+    txt+='SONG '+(si+1)+': '+s.title+'\n';
+    if(s.artist)    txt+='Artist:      '+s.artist+'\n';
+    if(s.iswc)      txt+='ISWC:        '+s.iswc+'\n';
+    if(s.copyright) txt+='Copyright #: '+s.copyright+'\n';
+    if(s.year)      txt+='Year:        '+s.year+'\n';
+    if(s.date)      txt+='Date:        '+s.date+'\n';
+    if(s.notes)     txt+='Notes:       '+s.notes+'\n';
+    txt+='\nWRITERS & SPLITS:\n';
+    s.writers.forEach(function(w,i){
+      txt+='  Writer '+(i+1)+': '+w.name+' | '+w.role+' | '+w.pro;
+      if(w.ipi) txt+=' | IPI: '+w.ipi;
+      if(w.publisher) txt+=' | Publisher: '+w.publisher;
+      if(w.email) txt+=' | Email: '+w.email;
+      txt+='\n    Comp: '+(w.comp||0)+'%  Master: '+(w.master||0)+'%\n';
+    });
+    var ct=sumF(s.writers,'comp'),mt=sumF(s.writers,'master');
+    txt+='  TOTALS: Comp '+ct.toFixed(1)+'% | Master '+mt.toFixed(1)+'%\n\n';
+  });
+  txt+='\n(Please also download and attach the Split Sheet PDF and PRO Excel file using the buttons on the form.)';
+  var titles=songs.map(function(s){return s.title;}).join(', ');
+  window.location.href='mailto:'+PUB_EMAIL+'?subject='+encodeURIComponent('Song Intake: '+titles)+'&body='+encodeURIComponent(txt);
+  setTimeout(showSuccess,1000);
+}
+
+function submitPDF(){
+  if(!validate()) return;
+  var jsPDF=window.jspdf.jsPDF;
+  var doc=new jsPDF({unit:'mm',format:'a4'});
+  var W=210,M=16;
+  songs.forEach(function(song,si){
+    if(si>0) doc.addPage();
+    var y=0;
+    doc.setFillColor(10,10,15); doc.rect(0,0,W,36,'F');
+    doc.setDrawColor(201,168,76); doc.setLineWidth(0.4); doc.line(M,36,W-M,36);
+    doc.setTextColor(201,168,76); doc.setFont('helvetica','bold'); doc.setFontSize(17);
+    doc.text('SYLECTIVE',M,15);
+    doc.setTextColor(148,163,184); doc.setFontSize(8); doc.setFont('helvetica','normal');
+    doc.text('Split Sheet - Song Intake',M,23);
+    doc.setFontSize(7); doc.setTextColor(75,85,105);
+    doc.text('Submitted: '+new Date().toLocaleString(),W-M,15,{align:'right'});
+    if(songs.length>1) doc.text('Song '+(si+1)+' of '+songs.length,W-M,23,{align:'right'});
+    y=44;
+    var infoH=song.notes?52:44;
+    doc.setFillColor(248,247,244); doc.rect(M,y,W-M*2,infoH,'F');
+    doc.setDrawColor(224,220,212); doc.setLineWidth(0.3); doc.rect(M,y,W-M*2,infoH,'S');
+    doc.setTextColor(10,10,15); doc.setFont('helvetica','bold'); doc.setFontSize(15);
+    doc.text(song.title||'Untitled',M+6,y+10);
+    if(song.artist){doc.setTextColor(100,116,139);doc.setFontSize(9);doc.setFont('helvetica','italic');doc.text(song.artist,M+6,y+17);}
+    var meta=[['ISWC',song.iswc],['Copyright #',song.copyright],['Year',song.year],['Date',song.date]].filter(function(x){return x[1];});
+    meta.forEach(function(item,mi){
+      var col=mi%2,row2=Math.floor(mi/2),mx=M+6+col*85,my=y+26+row2*8;
+      doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.setTextColor(148,163,184);
+      doc.text(item[0].toUpperCase(),mx,my);
+      doc.setFont('helvetica','bold');doc.setTextColor(10,10,15);doc.text(item[1],mx+30,my);
+    });
+    if(song.notes){
+      var ny=y+26+Math.ceil(meta.length/2)*8+3;
+      doc.setFont('helvetica','normal');doc.setFontSize(7.5);doc.setTextColor(148,163,184);
+      doc.text('NOTES',M+6,ny);doc.setTextColor(10,10,15);
+      doc.text(doc.splitTextToSize(song.notes,W-M*2-14),M+6,ny+5);
+    }
+    y+=infoH+6;
+    doc.setFillColor(10,10,15);doc.rect(M,y,W-M*2,9,'F');
+    doc.setTextColor(201,168,76);doc.setFontSize(7);doc.setFont('helvetica','bold');
+    doc.text('WRITERS & OWNERSHIP SPLITS',M+4,y+5.8);y+=9;
+    doc.setFillColor(25,25,45);doc.rect(M,y,W-M*2,7,'F');
+    doc.setTextColor(148,163,184);doc.setFontSize(6.5);doc.setFont('helvetica','bold');
+    [[M+2,'WRITER'],[M+42,'ROLE'],[M+72,'PRO'],[M+86,'IPI #'],[M+108,'PUBLISHER'],[M+134,'EMAIL'],[M+158,'COMP%'],[M+171,'MASTER%']].forEach(function(h){doc.text(h[1],h[0],y+4.8);});
+    y+=7;
+    song.writers.forEach(function(w,i){
+      doc.setFillColor(i%2===0?250:255,i%2===0?249:255,i%2===0?246:255);
+      doc.rect(M,y,W-M*2,8,'F');
+      doc.setTextColor(10,10,15);doc.setFontSize(7.5);doc.setFont('helvetica','normal');
+      [[M+2,w.name,38],[M+42,w.role,28],[M+72,w.pro,13],[M+86,w.ipi||'-',20],
+       [M+108,w.publisher||'-',24],[M+134,w.email||'-',22],
+       [M+158,(w.comp||0)+'%',12],[M+171,(w.master||0)+'%',16]
+      ].forEach(function(c){doc.text(doc.splitTextToSize(String(c[1]),c[2])[0],c[0],y+5.2);});
+      y+=8;
+    });
+    var ct=sumF(song.writers,'comp'),mt=sumF(song.writers,'master'),ok=Math.abs(ct-100)<0.01&&Math.abs(mt-100)<0.01;
+    doc.setFillColor(10,10,15);doc.rect(M,y,W-M*2,9,'F');
+    doc.setTextColor(255,255,255);doc.setFontSize(8);doc.setFont('helvetica','bold');
+    doc.text('TOTALS',M+2,y+6);doc.text('Composition: '+ct.toFixed(1)+'%',M+40,y+6);doc.text('Master: '+mt.toFixed(1)+'%',M+100,y+6);
+    doc.setTextColor(ok?52:245,ok?211:158,ok?153:11);doc.text(ok?'VALID':'PENDING',M+150,y+6);
+    y+=13;
+    doc.setFillColor(10,10,15);doc.rect(M,y,W-M*2,9,'F');
+    doc.setTextColor(201,168,76);doc.setFontSize(7);doc.setFont('helvetica','bold');
+    doc.text('SIGNATURES - By signing, each writer confirms agreement to the splits above',M+4,y+5.8);y+=12;
+    var sigW=(W-M*2)/2-4;
+    song.writers.forEach(function(w,i){
+      var col=i%2,row2=Math.floor(i/2),sx=M+col*(sigW+8),sy=y+row2*42;
+      doc.setFillColor(252,251,249);doc.setDrawColor(224,220,212);doc.setLineWidth(0.3);
+      doc.roundedRect(sx,sy,sigW,38,2,2,'FD');
+      doc.setTextColor(10,10,15);doc.setFont('helvetica','bold');doc.setFontSize(9);
+      doc.text(w.name||'Writer '+(i+1),sx+6,sy+9);
+      doc.setFont('helvetica','normal');doc.setFontSize(7);doc.setTextColor(100,116,139);
+      doc.text(w.role+' - '+w.pro+(w.ipi?' - IPI: '+w.ipi:''),sx+6,sy+15);
+      doc.setTextColor(201,168,76);doc.setFont('helvetica','bold');doc.setFontSize(8);
+      doc.text('Comp: '+(w.comp||0)+'%   Master: '+(w.master||0)+'%',sx+6,sy+22);
+      doc.setDrawColor(10,10,15);doc.setLineWidth(0.4);
+      doc.line(sx+6,sy+32,sx+sigW-6,sy+32);
+      doc.setTextColor(148,163,184);doc.setFont('helvetica','normal');doc.setFontSize(6.5);
+      doc.text('Signature',sx+6,sy+36);
+      doc.line(sx+sigW-34,sy+32,sx+sigW-6,sy+32);
+      doc.text('Date',sx+sigW-30,sy+36);
+    });
+    y+=Math.ceil(song.writers.length/2)*42+8;
+    doc.setDrawColor(224,220,212);doc.setLineWidth(0.3);doc.line(M,278,W-M,278);
+    doc.setTextColor(148,163,184);doc.setFontSize(7);doc.setFont('helvetica','normal');
+    doc.text('Sylective Split Sheet Organizer  -  Sylective@gmail.com',W/2,283,{align:'center'});
+    doc.text('Informal record only. For legally binding signatures use a certified e-signature service.',W/2,288,{align:'center'});
+  });
+  doc.save('sylective-'+songs.map(function(s){return (s.title||'song').replace(/\s+/g,'-').toLowerCase();}).join('_')+'.pdf');
+}
+
+function submitExcel(){
+  if(!validate()) return;
+  var wb=XLSX.utils.book_new();
+  songs.forEach(function(song,si){
+    var rows=[];
+    rows.push(['SYLECTIVE - PRO Work Registration Sheet']);
+    rows.push(['Generated: '+new Date().toLocaleString()]);
+    rows.push([]);
+    rows.push(['SONG INFORMATION']);
+    rows.push(['Song Title',song.title||'','Artist / Project',song.artist||'','ISWC',song.iswc||'','Copyright #',song.copyright||'']);
+    rows.push(['Year',song.year||'','Date',song.date||'','Notes',song.notes||'','','']);
+    rows.push([]);
+    rows.push(['WRITERS & SPLITS (PRO REGISTRATION FORMAT)']);
+    rows.push(['Writer Name','Legal Name','Role','PRO Affiliation','IPI / CAE Number','Publisher Name','Publisher IPI','Writer Email','Composition %','Master %','Total Share %','Controlled?']);
+    song.writers.forEach(function(w){
+      rows.push([w.name,w.name,w.role,w.pro,w.ipi||'',w.publisher||'','',w.email||'',parseFloat(w.comp)||0,parseFloat(w.master)||0,(parseFloat(w.comp)||0)+(parseFloat(w.master)||0),'Yes']);
+    });
+    var ct=sumF(song.writers,'comp'),mt=sumF(song.writers,'master');
+    rows.push(['TOTALS','','','','','','','',ct,mt,ct+mt,Math.abs(ct-100)<0.01&&Math.abs(mt-100)<0.01?'VALID':'CHECK SPLITS']);
+    rows.push([]);
+    rows.push(['PRO SUBMISSION LINKS']);
+    rows.push(['ASCAP','wecare.ascap.com']);
+    rows.push(['BMI','repertoire.bmi.com']);
+    rows.push(['SESAC','sesac.com/licensing']);
+    rows.push(['SOCAN','socan.com/register']);
+    rows.push(['PRS','portal.prsformusic.com']);
+    rows.push([]);
+    rows.push(['Note: Each writer should register this work with their respective PRO using the information above.']);
+    var ws=XLSX.utils.aoa_to_sheet(rows);
+    ws['!cols']=[{wch:28},{wch:28},{wch:22},{wch:14},{wch:18},{wch:24},{wch:14},{wch:26},{wch:14},{wch:12},{wch:14},{wch:14}];
+    var sname=(song.title||('Song '+(si+1))).substring(0,31).replace(/[\\\/\?\*\[\]]/g,'');
+    XLSX.utils.book_append_sheet(wb,ws,sname);
+  });
+  if(songs.length>1){
+    var sumRows=[['SYLECTIVE - Song Catalog Summary'],['Generated: '+new Date().toLocaleString()],[],
+      ['Song Title','Artist','ISWC','Copyright #','Writers','Comp Total','Master Total','Status']];
+    songs.forEach(function(s){
+      var ct=sumF(s.writers,'comp'),mt=sumF(s.writers,'master');
+      sumRows.push([s.title,s.artist,s.iswc,s.copyright,s.writers.length,ct,mt,Math.abs(ct-100)<0.01&&Math.abs(mt-100)<0.01?'Valid':'Check Splits']);
+    });
+    var sumWs=XLSX.utils.aoa_to_sheet(sumRows);
+    sumWs['!cols']=[{wch:26},{wch:22},{wch:18},{wch:16},{wch:10},{wch:12},{wch:12},{wch:14}];
+    XLSX.utils.book_append_sheet(wb,sumWs,'Summary');
+  }
+  XLSX.writeFile(wb,'sylective-pro-registration-'+new Date().toISOString().slice(0,10)+'.xlsx');
+}
+
+function showSuccess(){
+  document.getElementById('form-wrap').style.display='none';
+  document.getElementById('success-screen').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function resetForm(){
+  songs=[blankSong()];
+  activeId=songs[0].id;
+  document.getElementById('form-wrap').style.display='block';
+  document.getElementById('success-screen').style.display='none';
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
